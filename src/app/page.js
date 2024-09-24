@@ -4,7 +4,7 @@ import { useState } from "react";
 import LoginForm from "../components/socialLogins";
 import { doLogin, doRegister } from "./actions";
 import { useRouter } from "next/navigation";
-import * as emailjs from "emailjs-com";
+import { sendEmail } from "../components/sendEmail";
 
 import {
   Card,
@@ -27,28 +27,6 @@ export default function AuthPage() {
   const [activeTab, setActiveTab] = useState("login");
   const router = useRouter();
 
-  const sendEmail = async ({ name, email, verifyLink }) => {
-    const data = {
-      name: name,
-      email: email,
-      verifyLink: verifyLink,
-    };
-
-    emailjs.init("2hUV1GLHX6hixJRJS");
-
-    emailjs
-      .send("service_l0f690e", "template_zzahj9c", data, "2hUV1GLHX6hixJRJS")
-
-      .then(
-        (result) => {
-          alert("Email sent");
-        },
-        (error) => {
-          alert("Error sending email");
-        }
-      );
-  };
-
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (activeTab === "login") {
@@ -69,6 +47,7 @@ export default function AuthPage() {
       }
       try {
         const res = await doRegister(formData);
+        ("use server");
         await sendEmail({
           name: formData.get("name"),
           email: formData.get("email"),
